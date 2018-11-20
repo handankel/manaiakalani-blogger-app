@@ -4,6 +4,8 @@
 }
 .post-content-editor [contenteditable] {
 	height: 200px;
+	line-height: 1;
+	margin-top: -8px;
 }
 .post-content-editor button {
     width: 30px;
