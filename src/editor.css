@@ -6,6 +6,10 @@
 	height: 200px;
 	line-height: 1;
 	margin-top: -8px;
+	resize: vertical;
+	min-height: 200px;
+	max-height: 500px;
+	overflow: auto;
 }
 .post-content-editor button {
     width: 30px;
@@ -16,4 +20,7 @@
     height: 22px;
 
     background-size: 22px;	
+}
+.IconButton__icon-image___1gW7U {
+	background-image: url("linkImage.png");
 }
