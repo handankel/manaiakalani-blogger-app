@@ -207,6 +207,8 @@ class Add extends Component {
 
         var view = new window.google.picker.View(window.google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS);
         view.setMimeTypes(ALL_AUDIO_MIME_TYPES);
+		var year = new Date().getFullYear()
+		view.setQuery("after:" + year + "-01-01");
         var picker = new window.google.picker.PickerBuilder()
             .enableFeature(window.google.picker.Feature.NAV_HIDDEN)
             .enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
