@@ -94,7 +94,7 @@ class Add extends Component {
     };
 
     handlePublishClick = async () => {
-        const content = this._editor.getValueHtml() + this.state.fileContent;
+        const content = this._editor.getValueHtml() //+ this.state.fileContent;
         const { selectedBlog, id } = this.props;
         const { title, labels } = this.state;
 
@@ -222,9 +222,13 @@ class Add extends Component {
 				window.gapi.client.load('drive', 'v2', function() {
 					insertPermission(fileId)
 				});
-                this.setState({ 
-                    fileContent,
-                });
+                //this.setState({ 
+                //    fileContent,
+                //});
+				this._editor.insertText(fileId);
+				//console.log('getVal: ' +this._editor.getValueHtml());
+				//console.log('fileconten: '+fileContent);
+				//console.log('stated.value: '+this._editor.state.value);
               }
             })
             .build();
