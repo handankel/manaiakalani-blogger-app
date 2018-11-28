@@ -90,7 +90,7 @@ class Add extends Component {
         this.setState({
             timePickerShown: true
         })
-        this.props.schedulePost(/* time moment */);
+        //this.props.schedulePost(/* time moment */);
     };
 
     handlePublishClick = async () => {
@@ -207,8 +207,8 @@ class Add extends Component {
 
         var view = new window.google.picker.View(window.google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS);
         view.setMimeTypes(ALL_AUDIO_MIME_TYPES);
-		var year = new Date().getFullYear()
-		view.setQuery("after:" + year + "-01-01");
+		var year = new Date().getFullYear();
+		view.setQuery("after:" + year + "-01-01 ");
         var picker = new window.google.picker.PickerBuilder()
             .enableFeature(window.google.picker.Feature.NAV_HIDDEN)
             .enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
@@ -219,15 +219,18 @@ class Add extends Component {
             .setDeveloperKey(API_KEY)
             .setCallback((data) => {
               if (data.action === 'picked') {
-                const fileContent = `${this.state.content}\n<iframe src="${data.docs[0].embedUrl}" width="640" height="480"></iframe>` ;
-				var fileId = data.docs[0].id;
-				window.gapi.client.load('drive', 'v2', function() {
-					insertPermission(fileId)
-				});
+                //const fileContent = `${this.state.content}\n<iframe src="${data.docs[0].embedUrl}" width="640" height="480"></iframe>` ;
+				for (var image in data.docs) {
+					var fileId = data.docs[image].id;
+					window.gapi.client.load('drive', 'v2', function() {
+						insertPermission(fileId)
+					});
+					this._editor.insertText(fileId);
+				}
                 //this.setState({ 
                 //    fileContent,
                 //});
-				this._editor.insertText(fileId);
+				
 				//console.log('getVal: ' +this._editor.getValueHtml());
 				//console.log('fileconten: '+fileContent);
 				//console.log('stated.value: '+this._editor.state.value);
@@ -313,7 +316,7 @@ class Add extends Component {
                     </div>
                 </div>
                 <footer className="post-footer">
-                    {/* <button type="button" className="button-main button-spaced" onClick={this.handleScheduleOnClick}>Schedule</button> */}
+                    <button type="button" className="button-main button-spaced" onClick={this.handleScheduleOnClick}>Schedule</button>
                     <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ id ? 'Update' : 'Publish'} </button>
                 </footer>
             </form>
