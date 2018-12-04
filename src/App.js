@@ -6,9 +6,10 @@ import FirstLogin from './FirstLogin'
 import * as moment from 'moment';
 import fetchJsonp from 'fetch-jsonp'
 
+var secret = require('./secret.json');
 // Hard coding those is fine. As long as we don't put api secret here!!!
-export const API_KEY = 'AIzaSyAYXOVFtKSsuHB0xSBFklbNpn5Fna5Vycs';
-export const CLIENT_ID = '457131676170-6sqjomp8211vm88ts33g1ailrri30886.apps.googleusercontent.com';
+export const API_KEY = secret.API_KEY;
+export const CLIENT_ID = secret.CLIENT_ID;
 export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.readonly';
 
 class App extends Component {
