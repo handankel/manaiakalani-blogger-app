@@ -24,22 +24,49 @@ function strip(html){
 }
 
 function iframeModifier(string, toIframe){ //toIframe is a boolean that determines whether we're replacing the img tags with iframes (if true) or vice-versa
-	var parser = new DOMParser();
-	var doc = parser.parseFromString(string, "text/html");
-	if (toIframe){
-		var iframes = doc.querySelectorAll('img[data-id]');
-		for (var i = 0; i < iframes.length; i++) {
-			let valX = `<img data-id="${iframes[i].getAttribute('data-id')}" src="https://drive.google.com/thumbnail?id=${iframes[i].getAttribute('data-id')}&sz=w640-h480"/>`; 
-			let valY = `<iframe data-id="${iframes[i].getAttribute('data-id')}" src="https://drive.google.com/file/d/${iframes[i].getAttribute('data-id')}/preview" width="640" height="480"></iframe>`;
-			string = string.replace(valX, valY);
+	var searchStart = 0;
+	while (true) {
+		if (toIframe){
+			let tagStart = string.indexOf('<img ', searchStart);
+			if (tagStart < 0) {
+				break;
+			}
+			var tagEnd = string.indexOf(">", tagStart) + 1;
+			let tagString = string.slice(tagStart, tagEnd);
+			let dataIndex = tagString.indexOf('data-id');
+			if (dataIndex >= 0){
+				let idStart = tagString.indexOf('"',dataIndex) + 1;
+				let idEnd = tagString.indexOf('"', idStart);
+				let iframeValue = `<iframe data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/file/d/${tagString.slice(idStart, idEnd)}/preview" width="640" height="480"></iframe>`;
+				let endSlice = string.slice(tagEnd);
+				string = (string.slice(0, tagStart) + iframeValue + endSlice);
+				tagEnd = string.indexOf(endSlice, searchStart);
+			}
+			searchStart = tagEnd;
+			console.log(string);
 		}
-	}
-	else{
-		var iframes = doc.querySelectorAll('iframe[data-id]');
-		for (var i = 0; i < iframes.length; i++) {
-			let valY = `<img data-id="${iframes[i].getAttribute('data-id')}" src="https://drive.google.com/thumbnail?id=${iframes[i].getAttribute('data-id')}&sz=w640-h480"/>`;
-			let valX = `<iframe data-id="${iframes[i].getAttribute('data-id')}" src="https://drive.google.com/file/d/${iframes[i].getAttribute('data-id')}/preview" width="640" height="480"></iframe>`
-			string = string.replace(valX, valY);
+		else{
+			let tagStart = string.indexOf('<iframe ', searchStart);
+			if (tagStart < 0) {
+				break;
+			}
+			console.log(tagStart);
+			var tagEnd = string.indexOf("</", tagStart);
+			tagEnd = string.indexOf(">", tagEnd) + 1;
+			console.log(tagEnd);
+			let tagString = string.slice(tagStart, tagEnd);
+			let dataIndex = tagString.indexOf('data-id');
+			if (dataIndex >= 0){
+				let idStart = tagString.indexOf('"',dataIndex) + 1;
+				let idEnd = tagString.indexOf('"', idStart);
+				let imgValue = `<img data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/thumbnail?id=${tagString.slice(idStart, idEnd)}&sz=w640-h480"/>`;
+				let endSlice = string.slice(tagEnd);
+				string = (string.slice(0, tagStart) + imgValue + endSlice);
+				tagEnd = string.indexOf(endSlice, searchStart);
+			}
+			console.log(string);
+			searchStart = tagEnd;
+			console.log(searchStart);
 		}
 	}
 	return string;
@@ -259,7 +286,7 @@ class Add extends Component {
 					window.gapi.client.load('drive', 'v2', function() {
 						insertPermission(fileId)
 					});
-					if (data.docs[image].type = 'video'){
+					if (data.docs[image].type == 'video'){
 						this._editor.insertText(fileId, true);
 					}
 					else{

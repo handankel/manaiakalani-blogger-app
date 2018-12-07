@@ -10,7 +10,7 @@ var secret = require('./secret.json');
 // Hard coding those is fine. As long as we don't put api secret here!!!
 export const API_KEY = secret.API_KEY;
 export const CLIENT_ID = secret.CLIENT_ID;
-export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.readonly';
+export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file';
 
 class App extends Component {
   constructor(props) {
