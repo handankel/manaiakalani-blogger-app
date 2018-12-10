@@ -38,35 +38,30 @@ function iframeModifier(string, toIframe){ //toIframe is a boolean that determin
 				let idStart = tagString.indexOf('"',dataIndex) + 1;
 				let idEnd = tagString.indexOf('"', idStart);
 				let iframeValue = `<iframe data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/file/d/${tagString.slice(idStart, idEnd)}/preview" width="640" height="480"></iframe>`;
-				let endSlice = string.slice(tagEnd);
-				string = (string.slice(0, tagStart) + iframeValue + endSlice);
-				tagEnd = string.indexOf(endSlice, searchStart);
+				let originalLength = string.length;
+				string = (string.slice(0, tagStart) + iframeValue + string.slice(tagEnd));
+				tagEnd = tagEnd + (string.length - originalLength);
 			}
 			searchStart = tagEnd;
-			console.log(string);
 		}
 		else{
 			let tagStart = string.indexOf('<iframe ', searchStart);
 			if (tagStart < 0) {
 				break;
 			}
-			console.log(tagStart);
 			var tagEnd = string.indexOf("</", tagStart);
 			tagEnd = string.indexOf(">", tagEnd) + 1;
-			console.log(tagEnd);
 			let tagString = string.slice(tagStart, tagEnd);
 			let dataIndex = tagString.indexOf('data-id');
 			if (dataIndex >= 0){
 				let idStart = tagString.indexOf('"',dataIndex) + 1;
 				let idEnd = tagString.indexOf('"', idStart);
 				let imgValue = `<img data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/thumbnail?id=${tagString.slice(idStart, idEnd)}&sz=w640-h480"/>`;
-				let endSlice = string.slice(tagEnd);
-				string = (string.slice(0, tagStart) + imgValue + endSlice);
-				tagEnd = string.indexOf(endSlice, searchStart);
+				let originalLength = string.length;
+				string = (string.slice(0, tagStart) + imgValue + string.slice(tagEnd));
+				tagEnd = tagEnd + (string.length - originalLength);
 			}
-			console.log(string);
 			searchStart = tagEnd;
-			console.log(searchStart);
 		}
 	}
 	return string;
@@ -115,7 +110,7 @@ class Add extends Component {
                 return (
                     <MessageModal 
                         ref={modal => this.modal = modal}
-                        //onLeftActionClick={}
+                        onLeftActionClick={this.handleDeleteClick}
                         leftActionText="Yes"
                         rightActionText="Cancel"
                         message="Are you sure you want to"
@@ -141,7 +136,19 @@ class Add extends Component {
                 )
         }
     }
-
+	handleDeleteClick = async () => {
+		const { selectedBlog, id } = this.props;
+		try {
+			if (!(this.props.id)){
+				throw new Error('Post hasn\'t been published');			
+			}
+			await Posts.delete(selectedBlog.id, id);
+			window.location = '/';
+        } catch (error) {
+			alert(`There has been an error while deleting your blog post! \n\nTry again or log out and log back in. \n\nError message: ${error.message}`);
+			console.error('error', error);
+        }
+	};
     handleScheduleOnClick = () => {
         this.setState({
             timePickerShown: !this.state.timePickerShown
@@ -153,7 +160,7 @@ class Add extends Component {
         let content = this._editor.getValueHtml() //+ this.state.fileContent;
         const { selectedBlog, id } = this.props;
         const { title, labels } = this.state;
-		
+		var currentMoment = moment(this.state.date).toISOString();
 
         if (!title || !strip(content)) {
             return alert('Please fill out title and the content of the post.');
@@ -161,7 +168,10 @@ class Add extends Component {
 
 
         try {
-          const currentMoment = moment(this.state.date).toISOString(); // Change that the scheduled date moment
+		  if (this.props.status == 'SCHEDULED'){
+			  let postInfo = await Posts.get(selectedBlog.id, id);
+			  currentMoment = postInfo.published;
+		  }
 		  
 		  content = iframeModifier(content, true); //replaces specific image tags with iframes for the post
 		  
@@ -195,7 +205,7 @@ class Add extends Component {
     };
 
     handleSaveAsDraftClick = async () => {
-        const content = this._editor.getValueHtml() + this.state.fileContent;
+        let content = this._editor.getValueHtml() //+ this.state.fileContent;
         const { selectedBlog, id } = this.props;
         const { title, labels } = this.state;
 
@@ -204,7 +214,8 @@ class Add extends Component {
         }
 
         try {
-          const currentMoment = moment(); // Change that the scheduled date moment
+          const currentMoment = moment();// Change that the scheduled date moment
+		  content = iframeModifier(content, true);
           const postData = {
             id,
             title,
@@ -292,16 +303,7 @@ class Add extends Component {
 					else{
 						this._editor.insertText(fileId, false);
 					}
-					console.log(this._editor.getValueHtml());
-					console.log(data.docs[image].type);
 				}
-                //this.setState({ 
-                //    fileContent,
-                //});
-				
-				//console.log('getVal: ' +this._editor.getValueHtml());
-				//console.log('fileconten: '+fileContent);
-				//console.log('stated.value: '+this._editor.state.value);
               }
             })
             .build();
@@ -312,6 +314,9 @@ class Add extends Component {
         const {schedulePost, id, title, status} = this.props;
         const {redirectToPosts, content, activeModal, timePickerShown} = this.state;
         const pageTitle = id ? 'Edit post' : 'Create a new post';
+		let pickerDate = new Date();
+		pickerDate.setHours(13);
+		pickerDate.setMinutes(0);
         if (redirectToPosts) {
            return <Redirect to='/'/>;
         }
@@ -381,13 +386,20 @@ class Add extends Component {
                             }
                             </div>
                         </PostField>
-						<Datetime onChange={this.handleDate} input={id ? false : true} open={this.state.timePickerShown}/>
+						
+						<PostField title="Schedule Post:">
+							<div>
+								<label> Post will be published on: </label>
+								<Datetime onChange={this.handleDate} dateFormat="DD/MM/YYYY" defaultValue={pickerDate} input={status == 'SCHEDULED' || status == 'DRAFT' || !id ? true : false}/>
+							</div>
+						</PostField>
+						
                     </div>
                 </div>
 				
                 <footer className="post-footer">
-					<button type="button" className="button-main button-spaced" hidden={ id ? "hidden" : ""}onClick={this.handleScheduleOnClick}>Schedule</button>
-                    <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ id ? 'Update' : 'Publish'} </button>
+					<button type="button" className="button-main button-spaced" hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"} onClick={this.handleScheduleOnClick}>Schedule</button>
+                    <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ status == 'DRAFT' || !id ? 'Publish' : 'Update'} </button>
                 </footer>
             </form>
         );

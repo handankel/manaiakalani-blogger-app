@@ -3,7 +3,7 @@
  */
 
 .rdt {
-  position: relative;
+  display: inline-block;
 }
 .rdtPicker {
   display: none;
