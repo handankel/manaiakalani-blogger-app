@@ -1,14 +1,10 @@
 
 .post-content.post-content-editor {
 	height: auto;
+	line-height: 1;
 }
 .post-content-editor [contenteditable] {
-	height: 200px;
-	line-height: 1;
-	margin-top: -8px;
-	resize: vertical;
-	min-height: 200px;
-	max-height: 500px;
+	height: 300px;
 	overflow: auto;
 }
 .post-content-editor button {

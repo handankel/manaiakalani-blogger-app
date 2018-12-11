@@ -30,10 +30,10 @@ class Editor extends Component {
   insertText(text, iframe){ //iframe is a boolean value that determines whether the tag will be later replaced with an iframe i.e. for videos
 	this.state.value.toString('html' );
 	if (iframe) {
-		var newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w640-h480"/></p>`;
+		var newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
 	}
 	else {
-		var newValue = `${this.state.value.toString('html')} <p><img src="https://drive.google.com/thumbnail?id=${text}&sz=w640-h480"/></p>`;
+		var newValue = `${this.state.value.toString('html')} <p><img src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
 	}
 	this.setState({
 		value: RichTextEditor.createValueFromString(newValue, 'html')

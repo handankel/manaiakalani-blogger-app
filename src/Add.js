@@ -37,7 +37,7 @@ function iframeModifier(string, toIframe){ //toIframe is a boolean that determin
 			if (dataIndex >= 0){
 				let idStart = tagString.indexOf('"',dataIndex) + 1;
 				let idEnd = tagString.indexOf('"', idStart);
-				let iframeValue = `<iframe data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/file/d/${tagString.slice(idStart, idEnd)}/preview" width="640" height="480"></iframe>`;
+				let iframeValue = `<iframe data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/file/d/${tagString.slice(idStart, idEnd)}/preview" width="480" height="360"></iframe>`;
 				let originalLength = string.length;
 				string = (string.slice(0, tagStart) + iframeValue + string.slice(tagEnd));
 				tagEnd = tagEnd + (string.length - originalLength);
@@ -56,7 +56,7 @@ function iframeModifier(string, toIframe){ //toIframe is a boolean that determin
 			if (dataIndex >= 0){
 				let idStart = tagString.indexOf('"',dataIndex) + 1;
 				let idEnd = tagString.indexOf('"', idStart);
-				let imgValue = `<img data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/thumbnail?id=${tagString.slice(idStart, idEnd)}&sz=w640-h480"/>`;
+				let imgValue = `<img data-id="${tagString.slice(idStart, idEnd)}" src="https://drive.google.com/thumbnail?id=${tagString.slice(idStart, idEnd)}&sz=w480-h360"/>`;
 				let originalLength = string.length;
 				string = (string.slice(0, tagStart) + imgValue + string.slice(tagEnd));
 				tagEnd = tagEnd + (string.length - originalLength);
@@ -387,18 +387,19 @@ class Add extends Component {
                             </div>
                         </PostField>
 						
-						<PostField title="Schedule Post:">
-							<div>
-								<label> Post will be published on: </label>
-								<Datetime onChange={this.handleDate} dateFormat="DD/MM/YYYY" defaultValue={pickerDate} input={status == 'SCHEDULED' || status == 'DRAFT' || !id ? true : false}/>
-							</div>
+						<PostField title="Select Date And Time:" htmlFor="dateAndTime" hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"}>
+							<Datetime 
+								inputProps={{style: {'border': 'none', 'width': '100%', 'padding' : '10px', 'font-size' : '16px', 'text-align' : 'center'}, id : 'dateAndTime'}} 
+								onChange={this.handleDate} dateFormat="DD/MM/YYYY" 
+								defaultValue={pickerDate} 
+								input={status == 'SCHEDULED' || status == 'DRAFT' || !id ? true : false}/>
 						</PostField>
 						
                     </div>
                 </div>
 				
                 <footer className="post-footer">
-					<button type="button" className="button-main button-spaced" hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"} onClick={this.handleScheduleOnClick}>Schedule</button>
+					<button type="button" className="button-main button-spaced" hidden /*hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"}*/ onClick={this.handleScheduleOnClick}>Schedule</button>
                     <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ status == 'DRAFT' || !id ? 'Publish' : 'Update'} </button>
                 </footer>
             </form>

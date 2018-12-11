@@ -4,6 +4,7 @@
 
 .rdt {
   display: inline-block;
+  width:100%;
 }
 .rdtPicker {
   display: none;
