@@ -1,6 +1,7 @@
 
 .post-content.post-content-editor {
 	height: auto;
+	overflow: hidden;
 	line-height: 1;
 }
 .post-content-editor [contenteditable] {
