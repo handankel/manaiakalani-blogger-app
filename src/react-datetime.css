@@ -3,7 +3,6 @@
  */
 
 .rdt {
-  display: inline-block;
   width:100%;
 }
 .rdtPicker {
@@ -11,12 +10,11 @@
   position: absolute;
   width: 250px;
   padding: 4px;
-  right: 41px;
-  margin-top: 1px;
+  right: 40px;
   z-index: 99999 !important;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,.1);
-  border: 1px solid #f9f9f9;
+  border: 1px solid #66c7c0;
 }
 .rdtOpen .rdtPicker {
   display: block;
