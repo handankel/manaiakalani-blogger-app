@@ -20,3 +20,7 @@
 .IconButton__icon-image___1gW7U {
 	background-image: url("linkImage.png");
 }
+
+.ImageSpan__root___RoAqL {
+	pointer-events: none;
+}
