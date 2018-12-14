@@ -297,7 +297,7 @@ class Add extends Component {
 					window.gapi.client.load('drive', 'v2', function() {
 						insertPermission(fileId)
 					});
-					if (data.docs[image].type == 'video'){
+					if (data.docs[image].type != 'photo'){
 						this._editor.insertText(fileId, true);
 					}
 					else{
@@ -389,7 +389,7 @@ class Add extends Component {
 						
 						<PostField title="Select Date And Time:" htmlFor="dateAndTime" hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"}>
 							<Datetime 
-								inputProps={{style: {'border': 'none', 'width': '100%', 'padding' : '10px', 'font-size' : '16px', 'text-align' : 'center'}, id : 'dateAndTime', readonly: 'readonly'}} 
+								inputProps={{style: {'border': 'none', 'width': '100%', 'padding' : '10px', 'font-size' : '16px'}, id : 'dateAndTime', readonly: 'readonly'}} 
 								onChange={this.handleDate} dateFormat="DD/MM/YYYY" 
 								defaultValue={pickerDate} 
 								input={status == 'SCHEDULED' || status == 'DRAFT' || !id ? true : false}/>

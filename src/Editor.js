@@ -27,9 +27,9 @@ class Editor extends Component {
   //       : RichTextEditor.createEmptyValue()
   //   });
   // }
-  insertText(text, iframe){ //iframe is a boolean value that determines whether the tag will be later replaced with an iframe i.e. for videos
+  insertText(text, iframe){ //takes a string (google drive fileId) and a boolean value (iframe) and inserts an img tag into the editor. 
 	this.state.value.toString('html' );
-	if (iframe) {
+	if (iframe) { //if true, a data-id attribute is added to the tag to differentiate it from normal images
 		var newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
 	}
 	else {
