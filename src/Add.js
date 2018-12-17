@@ -16,7 +16,7 @@ export const APP_ID = secret.APP_ID;
 export const API_KEY = secret.API_KEY;
 export const CLIENT_ID = secret.CLIENT_ID;
 export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file';
-
+const debug = false;
 
 function strip(html){
    var doc = new DOMParser().parseFromString(html, 'text/html');
@@ -101,7 +101,6 @@ class Add extends Component {
     }
 	handleDate = (date) =>{
 		this.setState({date});
-		console.log(moment(this.state.date).toISOString());
 	};
     getModal(activeModal) {
         switch(activeModal) {
@@ -273,10 +272,13 @@ class Add extends Component {
         const GoogleUser = GoogleAuth.currentUser.get();
         const authResponse = GoogleUser.getAuthResponse(true);
         const { access_token } = authResponse;
-        console.log('GoogleAuth', GoogleAuth);
-        console.log('GoogleUser', GoogleUser);
-        console.log('authResponse', authResponse);
-        console.log('access_token', access_token);
+		if (debug){
+			console.log('GoogleAuth', GoogleAuth);
+			console.log('GoogleUser', GoogleUser);
+			console.log('authResponse', authResponse);
+			console.log('access_token', access_token);
+		}
+
 
         var view = new window.google.picker.View(window.google.picker.ViewId.DOCS_IMAGES_AND_VIDEOS);
         view.setMimeTypes(ALL_AUDIO_MIME_TYPES);
