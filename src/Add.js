@@ -1,7 +1,7 @@
 import PostField from './PostField';
 import React, { Component } from 'react';
 import Editor from './Editor'
-import {Blogs, Posts} from './api/blogger'
+import {Posts} from './api/blogger'
 import * as moment from 'moment';
 import { map, uniq, difference } from 'lodash';
 import { Redirect } from 'react-router'
@@ -25,13 +25,14 @@ function strip(html){
 
 function iframeModifier(string, toIframe){ //toIframe is a boolean that determines whether we're replacing the img tags with iframes (if true) or vice-versa
 	var searchStart = 0;
+	var tagEnd = 0;
 	while (true) {
 		if (toIframe){
 			let tagStart = string.indexOf('<img ', searchStart);
 			if (tagStart < 0) {
 				break;
 			}
-			var tagEnd = string.indexOf(">", tagStart) + 1;
+			tagEnd = string.indexOf(">", tagStart) + 1;
 			let tagString = string.slice(tagStart, tagEnd);
 			let dataIndex = tagString.indexOf('data-id');
 			if (dataIndex >= 0){
@@ -49,7 +50,7 @@ function iframeModifier(string, toIframe){ //toIframe is a boolean that determin
 			if (tagStart < 0) {
 				break;
 			}
-			var tagEnd = string.indexOf("</", tagStart);
+			tagEnd = string.indexOf("</", tagStart);
 			tagEnd = string.indexOf(">", tagEnd) + 1;
 			let tagString = string.slice(tagStart, tagEnd);
 			let dataIndex = tagString.indexOf('data-id');
@@ -72,13 +73,11 @@ function insertPermission(fileId) {
     'type': "anyone",
     'role': "reader"
   };
-  window.gapi.client.load('drive', 'v2', function() {
   var request = window.gapi.client.drive.permissions.insert({
     'fileId': fileId,
     'resource': body
   });
   request.execute(function(resp) { });
-  });
 }
 
 var curDate = new Date();
@@ -134,6 +133,8 @@ class Add extends Component {
                         alertBodyColorClassName="alert-body-green"
                     />
                 )
+			default : 
+				return  
         }
     }
 	handleDeleteClick = async () => {
@@ -168,7 +169,7 @@ class Add extends Component {
 
 
         try {
-		  if (this.props.status == 'SCHEDULED'){
+		  if (this.props.status === 'SCHEDULED'){
 			  let postInfo = await Posts.get(selectedBlog.id, id);
 			  currentMoment = postInfo.published;
 		  }
@@ -292,18 +293,20 @@ class Add extends Component {
             .setCallback((data) => {
               if (data.action === 'picked') {
                 //const fileContent = `${this.state.content}\n<iframe src="${data.docs[0].embedUrl}" width="640" height="480"></iframe>` ;
-				for (var image in data.docs) {
-					var fileId = data.docs[image].id;
-					window.gapi.client.load('drive', 'v2', function() {
+				var fileId = '';
+				window.gapi.client.load('drive', 'v2', function() {
+					for (var image in data.docs) {
+						fileId = data.docs[image].id;
 						insertPermission(fileId)
-					});
-					if (data.docs[image].type != 'photo'){
-						this._editor.insertText(fileId, true);
+						
+						if (data.docs[image].type !== 'photo'){
+							this._editor.insertText(fileId, true);
+						}
+						else{
+							this._editor.insertText(fileId, false);
+						}
 					}
-					else{
-						this._editor.insertText(fileId, false);
-					}
-				}
+				});
               }
             })
             .build();
@@ -311,8 +314,8 @@ class Add extends Component {
     }
 
     render() {
-        const {schedulePost, id, title, status} = this.props;
-        const {redirectToPosts, content, activeModal, timePickerShown} = this.state;
+        const {id, status} = this.props;
+        const {redirectToPosts, content, activeModal} = this.state;
         const pageTitle = id ? 'Edit post' : 'Create a new post';
 		let pickerDate = new Date();
 		pickerDate.setHours(13);
@@ -328,7 +331,7 @@ class Add extends Component {
                     <div className="post-header-buttons">
                         <button type="button" className="post-header-button" onClick={this.handleSaveAsDraftClick}>
                             <i className="fas fa-save"></i>
-                            <span className="post-header-button-label">{status == 'DRAFT' || !status ? 'Save' : 'Revert to Draft'}</span>
+                            <span className="post-header-button-label">{status === 'DRAFT' || !status ? 'Save' : 'Revert to Draft'}</span>
                         </button>
                         <button type="button" className="post-header-button" onClick={this.setActiveModal('DELETE')}>
                             <i className="fas fa-trash-alt"></i>
@@ -387,20 +390,19 @@ class Add extends Component {
                             </div>
                         </PostField>
 						
-						<PostField title="Select Date And Time:" htmlFor="dateAndTime" hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"}>
+						<PostField title="Select Date And Time:" htmlFor="dateAndTime" hidden={ status === 'SCHEDULED' || status === 'DRAFT' || !id ? "" : "hidden"}>
 							<Datetime 
-								inputProps={{style: {'border': 'none', 'width': '100%', 'padding' : '10px', 'font-size' : '16px'}, id : 'dateAndTime', readonly: 'readonly'}} 
+								inputProps={{style: {'border': 'none', 'width': '100%', 'padding' : '10px', 'fontSize' : '16px'}, id : 'dateAndTime', readOnly: 'readOnly'}} 
 								onChange={this.handleDate} dateFormat="DD/MM/YYYY" 
 								defaultValue={pickerDate} 
-								input={status == 'SCHEDULED' || status == 'DRAFT' || !id ? true : false}/>
+								input={status === 'SCHEDULED' || status === 'DRAFT' || !id ? true : false}/>
 						</PostField>
 						
                     </div>
                 </div>
 				
-                <footer className="post-footer">
-					<button type="button" className="button-main button-spaced" hidden /*hidden={ status == 'SCHEDULED' || status == 'DRAFT' || !id ? "" : "hidden"}*/ onClick={this.handleScheduleOnClick}>Schedule</button>
-                    <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ status == 'DRAFT' || !id ? 'Publish' : 'Update'} </button>
+                <footer className="post-footer">					
+                    <button type="button" className="button-secondary button-spaced" onClick={this.setActiveModal('PUBLISH')}>{ status === 'DRAFT' || !id ? 'Publish' : 'Update'} </button>
                 </footer>
             </form>
         );

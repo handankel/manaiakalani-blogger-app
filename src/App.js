@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {Blogs, Posts} from './api/blogger'
 import Navigation from './Navigation'
 import FirstLogin from './FirstLogin'
-import * as moment from 'moment';
 import fetchJsonp from 'fetch-jsonp'
 
 var secret = require('./secret.json');
@@ -22,7 +21,7 @@ class App extends Component {
       postsCount: undefined,
 
       nextPageToken: undefined,
-      posts: undefined,
+      posts: sessionStorage.getItem('posts') ? JSON.parse(sessionStorage.getItem('posts')) : undefined,
       isInitialLoading: true,
       isSignedIn: false
     };
@@ -31,7 +30,7 @@ class App extends Component {
   componentDidMount() {
     window.gapi.load('client:auth2:blogger:picker', this.initClient);
 
-    if (!(window.location.hostname === "localhost" || window.location.hostname === "10.101.2.25.xip.io" || window.location.hostname === "127.0.0.1")) {
+    if (!(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
       if (window.location.protocol !== "https:") {
         window.location = `https://${window.location.host}/`;
       }
@@ -93,6 +92,7 @@ class App extends Component {
         nextPageToken: myPosts.nextPageToken,
         posts: myPosts.items,
       });
+	  console.log(sessionStorage.getItem('posts'))
       return { myBlog, myPosts };
     } catch (e) {
       // Ignore this error on logout
@@ -141,8 +141,8 @@ class App extends Component {
     // }
 
 
-    const { myBlog, myPosts } = await this.loadPostsInitial();
-
+    const { myBlog } = await this.loadPostsInitial();
+	sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
     console.log('myBlog.id', myBlog.id);
     console.log('myBlog',myBlog);
 

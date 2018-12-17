@@ -1,6 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import PostField from './PostField';
-import ReactDOM from 'react-dom';
 import RichTextEditor from 'react-rte';
 import './editor.css'
 
@@ -29,11 +28,12 @@ class Editor extends Component {
   // }
   insertText(text, iframe){ //takes a string (google drive fileId) and a boolean value (iframe) and inserts an img tag into the editor. 
 	this.state.value.toString('html' );
+	var newValue = '';
 	if (iframe) { //if true, a data-id attribute is added to the tag to differentiate it from normal images
-		var newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
+		newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
 	}
 	else {
-		var newValue = `${this.state.value.toString('html')} <p><img src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
+		newValue = `${this.state.value.toString('html')} <p><img src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
 	}
 	this.setState({
 		value: RichTextEditor.createValueFromString(newValue, 'html')
