@@ -10,7 +10,7 @@ var secret = require('./secret.json');
 export const API_KEY = secret.API_KEY;
 export const CLIENT_ID = secret.CLIENT_ID;
 export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file';
-
+const debug = false;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -92,7 +92,6 @@ class App extends Component {
         nextPageToken: myPosts.nextPageToken,
         posts: myPosts.items,
       });
-	  console.log(sessionStorage.getItem('posts'))
       return { myBlog, myPosts };
     } catch (e) {
       // Ignore this error on logout
@@ -143,9 +142,10 @@ class App extends Component {
 
     const { myBlog } = await this.loadPostsInitial();
 	sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
-    console.log('myBlog.id', myBlog.id);
-    console.log('myBlog',myBlog);
-
+	if (debug) {
+		console.log('myBlog.id', myBlog.id);
+		console.log('myBlog',myBlog);
+	}
     try {
       const response = await fetchJsonp(`${myBlog.url.replace(/^http:\/\//i, 'https://')}feeds/posts/summary?alt=json&max-results=0&callback=cat`, { jsonpCallbackFunction: 'cat' });
       const data = await response.json();
