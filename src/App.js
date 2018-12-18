@@ -142,7 +142,7 @@ class App extends Component {
 
     const { myBlog } = await this.loadPostsInitial();
 	sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
-	if (debug) {
+	if (debug){
 		console.log('myBlog.id', myBlog.id);
 		console.log('myBlog',myBlog);
 	}
