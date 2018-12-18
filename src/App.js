@@ -92,6 +92,7 @@ class App extends Component {
         nextPageToken: myPosts.nextPageToken,
         posts: myPosts.items,
       });
+	  sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
       return { myBlog, myPosts };
     } catch (e) {
       // Ignore this error on logout
@@ -141,7 +142,6 @@ class App extends Component {
 
 
     const { myBlog } = await this.loadPostsInitial();
-	sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
 	if (debug){
 		console.log('myBlog.id', myBlog.id);
 		console.log('myBlog',myBlog);
