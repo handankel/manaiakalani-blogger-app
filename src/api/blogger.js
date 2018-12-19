@@ -1,5 +1,5 @@
 export const MAX_RESULTS_PER_PAGE = 10;
-
+const debug = false;
 export class Blogs {
   static _listByUser() {
     return new Promise((resolve, reject) => {
@@ -19,7 +19,9 @@ export class Blogs {
   // Tested manually by Ilia
   static async getMyFirstBlog() {
     const listByUserData = await Blogs._listByUser();
-    console.log('listByUserData',listByUserData)
+	if (debug){
+		console.log('listByUserData',listByUserData)
+	}
     const myBlogs = listByUserData.items;
     return myBlogs[0];
   }

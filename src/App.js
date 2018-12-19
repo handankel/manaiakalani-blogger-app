@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 import {Blogs, Posts} from './api/blogger'
 import Navigation from './Navigation'
 import FirstLogin from './FirstLogin'
-import * as moment from 'moment';
 import fetchJsonp from 'fetch-jsonp'
 
+var secret = require('./secret.json');
 // Hard coding those is fine. As long as we don't put api secret here!!!
-export const API_KEY = 'AIzaSyAYXOVFtKSsuHB0xSBFklbNpn5Fna5Vycs';
-export const CLIENT_ID = '457131676170-6sqjomp8211vm88ts33g1ailrri30886.apps.googleusercontent.com';
-export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.readonly';
-
+export const API_KEY = secret.API_KEY;
+export const CLIENT_ID = secret.CLIENT_ID;
+export const SCOPE = 'profile email https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive.file';
+const debug = false;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ class App extends Component {
       postsCount: undefined,
 
       nextPageToken: undefined,
-      posts: undefined,
+      posts: sessionStorage.getItem('posts') ? JSON.parse(sessionStorage.getItem('posts')) : undefined,
       isInitialLoading: true,
       isSignedIn: false
     };
@@ -92,6 +92,7 @@ class App extends Component {
         nextPageToken: myPosts.nextPageToken,
         posts: myPosts.items,
       });
+	  sessionStorage.setItem('posts', JSON.stringify(this.state.posts));
       return { myBlog, myPosts };
     } catch (e) {
       // Ignore this error on logout
@@ -140,11 +141,11 @@ class App extends Component {
     // }
 
 
-    const { myBlog, myPosts } = await this.loadPostsInitial();
-
-    console.log('myBlog.id', myBlog.id);
-    console.log('myBlog',myBlog);
-
+    const { myBlog } = await this.loadPostsInitial();
+	if (debug){
+		console.log('myBlog.id', myBlog.id);
+		console.log('myBlog',myBlog);
+	}
     try {
       const response = await fetchJsonp(`${myBlog.url.replace(/^http:\/\//i, 'https://')}feeds/posts/summary?alt=json&max-results=0&callback=cat`, { jsonpCallbackFunction: 'cat' });
       const data = await response.json();

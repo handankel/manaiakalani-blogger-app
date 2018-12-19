@@ -1,9 +1,12 @@
 
 .post-content.post-content-editor {
 	height: auto;
+	overflow: hidden;
+	line-height: 1;
 }
 .post-content-editor [contenteditable] {
-	height: 200px;
+	height: 300px;
+	overflow: auto;
 }
 .post-content-editor button {
     width: 30px;
@@ -14,4 +17,11 @@
     height: 22px;
 
     background-size: 22px;	
+}
+.IconButton__icon-image___1gW7U {
+	background-image: url("linkImage.png") !important;
+}
+
+.ImageSpan__root___RoAqL {
+	pointer-events: none;
 }

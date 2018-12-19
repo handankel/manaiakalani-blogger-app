@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import PostField from './PostField';
 import RichTextEditor from 'react-rte';
 import './editor.css'
@@ -26,7 +26,19 @@ class Editor extends Component {
   //       : RichTextEditor.createEmptyValue()
   //   });
   // }
-
+  insertText(text, iframe){ //takes a string (google drive fileId) and a boolean value (iframe) and inserts an img tag into the editor. 
+	this.state.value.toString('html' );
+	var newValue = '';
+	if (iframe) { //if true, a data-id attribute is added to the tag to differentiate it from normal images
+		newValue = `${this.state.value.toString('html')} <p><img data-id="${text}" src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
+	}
+	else {
+		newValue = `${this.state.value.toString('html')} <p><img src="https://drive.google.com/thumbnail?id=${text}&sz=w480-h360"/></p>`;
+	}
+	this.setState({
+		value: RichTextEditor.createValueFromString(newValue, 'html')
+    });
+  }
   getValueHtml = () => {
     return this.state.value.toString('html');
   }
@@ -34,7 +46,8 @@ class Editor extends Component {
   // getValueText = () => {
   //   return this.state.value.toString('markdown');
   // }
-
+ 
+  
   onChange = (value) => {
     this.setState({value});
     if (this.props.onChange) {
@@ -49,7 +62,9 @@ class Editor extends Component {
 
   render () {
     return (
+	  <div>
       <PostField title="Content:" htmlFor="postContent">
+		
           <RichTextEditor
             id="postContent" 
             className="post-content post-content-editor"
@@ -57,8 +72,9 @@ class Editor extends Component {
             onChange={this.onChange}
             placeholder="Type here..."
           />
+		 
       </PostField>
-
+	  </div>
     );
   }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
 import './Modal.css';
-import cn from 'classnames';
 
 const customStyles = {
     overlay: {
@@ -65,10 +64,10 @@ const customStyles = {
 
   
     render() {
-      const {type, alertBodyColorClassName, leftActionText, leftActionClassName, rightActionClassName, rightActionText, color, message, mainMessage} = this.props;
+      const {type, alertBodyColorClassName, leftActionText, leftActionClassName, rightActionClassName, rightActionText, message, mainMessage} = this.props;
       let modalBody;
 
-      if(type == 'error')
+      if(type === 'error')
         {
           modalBody = (
             <div className="error-body">
