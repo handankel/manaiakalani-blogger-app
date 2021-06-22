@@ -1,6 +1,6 @@
 {
   "name": "manaiakalani-blogger-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
@@ -12,7 +12,7 @@
     "react": "^16.3.2",
     "react-datetime": "^2.16.2",
     "react-dom": "^16.3.2",
-    "react-google-login": "^3.2.1",
+    "react-google-login": "^5.2.2",
     "react-helmet": "^5.2.0",
     "react-infinite-scroller": "^1.1.4",
     "react-modal": "^3.4.2",
@@ -20,8 +20,8 @@
     "react-moment-input": "^0.2.13",
     "react-paginate": "^5.2.2",
     "react-rte": "^0.16.1",
-    "react-scripts": "1.1.4",
-	"webpack-dev-server": "2.9.4"
+    "react-scripts": "4.0.3",
+    "webpack-dev-server": "3.11.1"
   },
   "scripts": {
     "start": "react-scripts start --history-api-fallback",
@@ -31,5 +31,17 @@
   },
   "devDependencies": {
     "react-router-dom": "^4.2.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

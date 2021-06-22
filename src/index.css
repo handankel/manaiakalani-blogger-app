@@ -40,24 +40,24 @@ button {
 }
 
 .google-login-button-diableled {
-  background-image: url(/1x/btn_google_signin_dark_disabled_web.png);
+  background-image: url(./1x/btn_google_signin_dark_disabled_web.png);
   cursor: auto;
 }
 
 .google-login-button-reddy {
-  background-image: url(/1x/btn_google_signin_dark_normal_web.png);
+  background-image: url(./1x/btn_google_signin_dark_normal_web.png);
 }
 .google-login-button-reddy:focus {
-  background-image: url(/1x/btn_google_signin_dark_focus_web.png);
+  background-image: url(./1x/btn_google_signin_dark_focus_web.png);
   outline: none;
 }
 
 .google-login-button-reddy:hover {
-  background-image: url(/1x/btn_google_signin_dark_focus_web.png);
+  background-image: url(./1x/btn_google_signin_dark_focus_web.png);
 }
 
 .google-login-button-reddy:visited {
-  background-image: url(/1x/btn_google_signin_dark_pressed_web.png);
+  background-image: url(./1x/btn_google_signin_dark_pressed_web.png);
 }
 
 .first-login-image {
